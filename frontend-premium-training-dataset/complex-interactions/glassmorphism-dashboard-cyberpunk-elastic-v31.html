@@ -1,0 +1,197 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Premium Glassmorphism Dashboard</title>
+  <style>
+    :root {
+      --glass-bg: rgba(255, 255, 255, 0.05);
+      --glass-border: rgba(255, 255, 255, 0.1);
+      --glass-glow: rgba(255, 255, 255, 0.05);
+      --text-main: #e4e4e7;
+      --text-muted: #94a3b8;
+    }
+
+    * { box-sizing: border-box; margin: 0; padding: 0; }
+
+    body {
+      font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, Helvetica, Arial, sans-serif;
+      /* Advanced CSS Mesh Gradient Background */
+      background-color: #0f172a;
+      background-image:
+        radial-gradient(at 40% 20%, hsla(253,16%,7%,1) 0px, transparent 50%),
+        radial-gradient(at 80% 0%, hsla(189,100%,56%,0.15) 0px, transparent 50%),
+        radial-gradient(at 0% 50%, hsla(355,100%,93%,0.05) 0px, transparent 50%);
+      color: var(--text-main);
+      min-height: 100vh;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      padding: 2rem;
+    }
+
+    /* Ambient animated orb to highlight the glass effect */
+    .ambient-orb {
+      position: absolute;
+      width: 400px;
+      height: 400px;
+      background: linear-gradient(to right, #ec4899, #8b5cf6);
+      border-radius: 50%;
+      filter: blur(24px);
+      z-index: 0;
+      animation: floatOrb 10s ease-in-out infinite alternate;
+    }
+
+    @keyframes floatOrb {
+      0% { transform: translate(-100px, -100px) scale(0.8); }
+      100% { transform: translate(100px, 100px) scale(1.2); }
+    }
+
+    /* Core Glassmorphism Container */
+    .glass-panel {
+      position: relative;
+      z-index: 1; /* Sit above the orb */
+      width: 100%;
+      max-width: 900px;
+      height: 600px;
+      background: var(--glass-bg);
+      backdrop-filter: blur(24px); /* The magic sauce */
+      -webkit-backdrop-filter: blur(24px);
+      border: 1px solid var(--glass-border);
+      border-radius: 2rem;
+      box-shadow: 0 25px 50px -12px rgba(0, 0, 0, 0.5), inset 0 1px 1px var(--glass-glow);
+      display: grid;
+      grid-template-columns: 250px 1fr;
+      overflow: hidden; /* Keep internal elements inside rounded corners */
+      transition: transform 0.3s cubic-bezier(0.68, -0.55, 0.265, 1.55);
+    }
+
+    /* 3D tilt effect on hover setup */
+    .glass-panel:hover {
+      transform: translateY(-5px);
+    }
+
+    /* Sidebar */
+    .sidebar {
+      border-right: 1px solid var(--glass-border);
+      padding: 2rem;
+      display: flex;
+      flex-direction: column;
+      gap: 1.5rem;
+    }
+
+    .nav-item {
+      padding: 0.75rem 1rem;
+      border-radius: 0.75rem;
+      color: var(--text-muted);
+      cursor: pointer;
+      transition: all 0.2s ease;
+      display: flex;
+      align-items: center;
+      gap: 0.75rem;
+    }
+
+    .nav-item:hover, .nav-item.active {
+      background: rgba(255, 255, 255, 0.1);
+      color: var(--text-main);
+    }
+
+    /* Main Content Area */
+    .main-content {
+      padding: 2.5rem;
+    }
+
+    h1 {
+      font-size: 2rem;
+      font-weight: 600;
+      margin-bottom: 2rem;
+      letter-spacing: -0.025em;
+    }
+
+    .grid-metrics {
+      display: grid;
+      grid-template-columns: repeat(2, 1fr);
+      gap: 1.5rem;
+    }
+
+    /* Interactive Metric Cards */
+    .metric-card {
+      background: rgba(255, 255, 255, 0.03);
+      border: 1px solid var(--glass-border);
+      border-radius: 1rem;
+      padding: 1.5rem;
+      position: relative;
+      overflow: hidden;
+      cursor: default;
+    }
+
+    /* Mouse follow glow effect */
+    .metric-card::before {
+      content: '';
+      position: absolute;
+      top: 0; left: 0; right: 0; bottom: 0;
+      background: radial-gradient(circle 100px at var(--mouse-x, 50%) var(--mouse-y, 50%), rgba(255,255,255,0.1), transparent);
+      opacity: 0;
+      transition: opacity 0.3s ease;
+      pointer-events: none;
+    }
+
+    .metric-card:hover::before {
+      opacity: 1;
+    }
+
+    .metric-value {
+      font-size: 2.5rem;
+      font-weight: 700;
+      margin: 0.5rem 0;
+    }
+
+  </style>
+</head>
+<body>
+
+  <div class="ambient-orb"></div>
+
+  <div class="glass-panel">
+    <div class="sidebar">
+      <div class="nav-item active">Dashboard</div>
+      <div class="nav-item">Analytics</div>
+      <div class="nav-item">Settings</div>
+    </div>
+
+    <div class="main-content">
+      <h1>Overview</h1>
+      <div class="grid-metrics">
+        <div class="metric-card">
+          <div style="color: var(--text-muted); font-size: 0.875rem;">Total Revenue</div>
+          <div class="metric-value">$124,500</div>
+          <div style="color: #10b981; font-size: 0.875rem;">+14.5% from last month</div>
+        </div>
+        <div class="metric-card">
+          <div style="color: var(--text-muted); font-size: 0.875rem;">Active Users</div>
+          <div class="metric-value">8,234</div>
+          <div style="color: #10b981; font-size: 0.875rem;">+5.2% from last month</div>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <script>
+    /**
+     * Mouse tracking script for advanced radial gradient hover effect.
+     * This attaches coordinates to CSS variables dynamically.
+     */
+    document.querySelectorAll('.metric-card').forEach(card => {
+      card.addEventListener('mousemove', e => {
+        const rect = card.getBoundingClientRect();
+        const x = e.clientX - rect.left;
+        const y = e.clientY - rect.top;
+
+        card.style.setProperty('--mouse-x', `${x}px`);
+        card.style.setProperty('--mouse-y', `${y}px`);
+      });
+    });
+  </script>
+</body>
+</html>
