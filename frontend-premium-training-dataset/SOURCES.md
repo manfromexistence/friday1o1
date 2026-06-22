@@ -13,29 +13,42 @@ The modern standard for generating frontend code is Multimodal (Vision-Language)
     *   **Focus:** State-of-the-art benchmark and dataset for converting visual designs into functional HTML/CSS. Highly critical for advanced UI models.
     *   **Link:** `https://huggingface.co/datasets/SALT-NLP/Design2Code`
 
-## 2. Interactive DOM & Web Navigation Datasets (NEW)
+## 2. Wireframe & Sketch to Code Datasets (NEW)
+
+To teach a model how to interpret low-fidelity design requirements (like hand-drawn wireframes or basic bounding boxes) into production HTML/CSS.
+
+*   **SALT-NLP/Sketch2Code:**
+    *   **Focus:** A massive dataset pairing hand-drawn UI sketches and low-fidelity wireframes with their corresponding high-quality HTML/CSS implementations.
+    *   **Link:** `https://huggingface.co/datasets/SALT-NLP/Sketch2Code`
+*   **N0zomu/pix2code-data:**
+    *   **Focus:** Classic, highly-structured dataset for translating raw graphical user interface images into a Domain Specific Language (DSL) which compiles to HTML/CSS.
+    *   **Link:** `https://huggingface.co/datasets/N0zomu/pix2code-data`
+
+## 3. Interactive DOM & Web Navigation Datasets
 
 To build a model that doesn't just write static HTML, but understands *how* a user interacts with the DOM (clicking, typing, state changes), you must include interactive web datasets.
 
 *   **osunlp/Mind2Web:**
     *   **Focus:** Towards a Generalist Agent for the Web. This contains millions of actions across thousands of websites, mapping DOM states to interactive actions. Critical for teaching the model how buttons, forms, and JS states actually function in the real world.
     *   **Link:** `https://huggingface.co/datasets/osunlp/Mind2Web`
-    *   *Also see:* `osunlp/Multimodal-Mind2Web`
 *   **TIGER-Lab/WebInstructSub:**
     *   **Focus:** High-quality instruction-tuning data for web programming and UI generation. Crucial for chat-based models.
     *   **Link:** `https://huggingface.co/datasets/TIGER-Lab/WebInstructSub`
 
-## 3. Framework & Utility Specific Datasets (NEW)
+## 4. Component-Level & Framework Datasets (NEW)
 
-Modern frontends heavily rely on utility classes (Tailwind). A 50M parameter model needs dedicated training on these architectures.
+Modern frontends heavily rely on component architectures and utility classes (Tailwind). A 50M parameter model needs dedicated training on these subsets.
 
+*   **sk1502/ui-components-finetune:**
+    *   **Focus:** Highly targeted, isolated UI components specifically formatted for instruction-tuning LLMs to output clean, modular components rather than full pages.
+    *   **Link:** `https://huggingface.co/datasets/sk1502/ui-components-finetune`
 *   **Eim/tailwind-html** & **Reubencf/frontend-html-tailwind-js:**
     *   **Focus:** Massive scrapes of pure Tailwind CSS architecture. Teaches the model semantic utility class combinations.
     *   **Links:**
         *   `https://huggingface.co/datasets/Eim/tailwind-html`
         *   `https://huggingface.co/datasets/Reubencf/frontend-html-tailwind-js`
 
-## 4. Massive Pre-compiled Code Datasets
+## 5. Massive Pre-compiled Code Datasets
 
 For pure code-completion bulk, use datasets that have already done massive deduplication and PII redaction on GitHub code:
 
@@ -46,7 +59,7 @@ For pure code-completion bulk, use datasets that have already done massive dedup
     *   **Focus:** Massive scale HTML specifically formatted and chunked for optimal compression and LLM training ingestion.
     *   **Link:** `https://huggingface.co/datasets/khoomeik/gzipscale-code-html-256M`
 
-## 5. Premium Open-Source UI Libraries
+## 6. Premium Open-Source UI Libraries
 
 To teach a model "good taste" (modern aesthetics, glassmorphism, 60fps animations), augment the massive datasets above by heavily over-indexing the source code of these premium libraries:
 
