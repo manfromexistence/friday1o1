@@ -13,7 +13,7 @@ To build an ultra high-quality training corpus for 50M+ parameter frontend model
 - Only highly self-contained, plain HTML/CSS/JS files are generated for maximum parser compatibility.
 - Avoided React/Vue specific constructs in these foundation files to allow the dataset to be broadly foundational, though techniques map to modern frameworks.
 - Tailwind CDN is permitted per instructions but used sparingly to ensure deep CSS capability is modeled.
-- `generator.js` acts as a mock/stub for now, designed to be expanded out to parameterize the core foundational examples (e.g. by swapping palettes, injecting varying content lengths, swapping easing functions).
+- `generator.js` acts as a skeleton script for now, prepared to be expanded by the user to parameterize the core foundational examples at massive scale on their own machine.
 
 ## Statistics (Initial Run)
 - Files Generated: 3

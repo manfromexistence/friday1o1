@@ -1,115 +1,82 @@
 /**
- * Full Dataset Generator
- * Reads foundational HTML templates and procedurally expands them into hundreds
- * of premium variations by injecting diverse color palettes, timings, and layout styles.
+ * High-Scale Combinatorial Synthesizer for AI Fine-Tuning.
+ * Generates high-quality HTML/CSS/JS frontend examples
+ * and streams them directly into an Instruction/Output JSONL file.
  */
 
 const fs = require('fs');
 const path = require('path');
 
-const BASE_DIR = __dirname;
-const METADATA_PATH = path.join(BASE_DIR, 'metadata.jsonl');
+const OUTPUT_FILE = path.join(__dirname, 'ai_finetune_data.jsonl');
+const TARGET_ROWS = 5000; // Small subset to avoid Git blob limits
 
-// Clear existing metadata for a fresh run
-fs.writeFileSync(METADATA_PATH, '');
-
-// Configuration for procedural variations
-const variations = {
-  palettes: [
-    { name: 'dark-nebula', bg: '#0f172a', text: '#f8fafc', accent: '#38bdf8', accent2: '#818cf8', cardBg: 'rgba(30, 41, 59, 0.7)' },
-    { name: 'cyberpunk', bg: '#09090b', text: '#e4e4e7', accent: '#f43f5e', accent2: '#8b5cf6', cardBg: 'rgba(24, 24, 27, 0.8)' },
-    { name: 'emerald-city', bg: '#022c22', text: '#ecfdf5', accent: '#10b981', accent2: '#34d399', cardBg: 'rgba(6, 78, 59, 0.6)' },
-    { name: 'midnight-rose', bg: '#2e1065', text: '#fdf4ff', accent: '#fb7185', accent2: '#d946ef', cardBg: 'rgba(76, 29, 149, 0.5)' },
-    { name: 'abyss', bg: '#000000', text: '#ffffff', accent: '#a3a3a3', accent2: '#d4d4d4', cardBg: 'rgba(23, 23, 23, 0.9)' }
+// Combinatorial building blocks
+const components = {
+  layouts: [
+    { name: 'Dashboard', html: '<div class="dashboard"><aside class="sidebar">[SIDEBAR]</aside><main class="content">[MAIN]</main></div>' },
+    { name: 'Landing Page', html: '<div class="landing"><header class="hero">[HERO]</header><section class="features">[FEATURES]</section></div>' },
+    { name: 'Portfolio Profile', html: '<div class="portfolio"><div class="avatar-header">[AVATAR]</div><div class="gallery">[GALLERY]</div></div>' }
   ],
-  springCurves: [
-    { name: 'bouncy', curve: 'cubic-bezier(0.175, 0.885, 0.32, 1.275)' },
-    { name: 'snappy', curve: 'cubic-bezier(0.25, 0.46, 0.45, 0.94)' },
-    { name: 'smooth', curve: 'cubic-bezier(0.4, 0, 0.2, 1)' },
-    { name: 'elastic', curve: 'cubic-bezier(0.68, -0.55, 0.265, 1.55)' }
+  colors: [
+    { theme: 'Midnight', bg: '#0f172a', text: '#f8fafc', primary: '#3b82f6', secondary: '#8b5cf6' },
+    { theme: 'Neon Cyber', bg: '#000000', text: '#00ffcc', primary: '#ff00ff', secondary: '#00ffff' },
+    { theme: 'Minimalist Light', bg: '#ffffff', text: '#09090b', primary: '#18181b', secondary: '#71717a' },
+    { theme: 'Forest Glass', bg: '#064e3b', text: '#ecfdf5', primary: '#10b981', secondary: '#34d399' }
   ],
-  blurAmounts: ['8px', '12px', '16px', '24px']
+  interactions: [
+    { name: 'Spring Scroll', trigger: 'IntersectionObserver', effect: 'transform: translateY(0); opacity: 1; transition: all 1s cubic-bezier(0.175, 0.885, 0.32, 1.275);', js: 'const observer = new IntersectionObserver(e => e.forEach(i => { if(i.isIntersecting) i.target.classList.add("visible"); })); document.querySelectorAll(".animate-target").forEach(el => observer.observe(el));' },
+    { name: 'Glassmorphism Hover Tilt', trigger: 'mousemove', effect: 'backdrop-filter: blur(20px); transition: transform 0.2s; &:hover { transform: perspective(1000px) rotateX(10deg) rotateY(10deg); }', js: 'document.querySelectorAll(".glass-card").forEach(c => c.addEventListener("mousemove", e => { const x = (window.innerWidth / 2 - e.pageX) / 25; const y = (window.innerHeight / 2 - e.pageY) / 25; c.style.transform = `perspective(1000px) rotateY(${x}deg) rotateX(${y}deg)`; }));' }
+  ]
 };
 
-function readTemplate(filepath) {
-  return fs.readFileSync(path.join(BASE_DIR, filepath), 'utf8');
-}
+// Utilities
+const getRandom = (arr) => arr[Math.floor(Math.random() * arr.length)];
 
-function updateMetadata(entry) {
-  fs.appendFileSync(METADATA_PATH, JSON.stringify(entry) + '\n');
-}
+function synthesizeExample() {
+  const layout = getRandom(components.layouts);
+  const color = getRandom(components.colors);
+  const interaction = getRandom(components.interactions);
 
-function processTemplate(templateContent, config, templateType) {
-  let modified = templateContent;
+  // Synthesize HTML structure
+  let bodyHTML = layout.html
+    .replace('[SIDEBAR]', `<ul><li>Home</li><li>Analytics</li><li>Settings</li></ul>`)
+    .replace('[MAIN]', `<div class="glass-card animate-target"><h2>Overview</h2><p>Premium generated content.</p></div>`)
+    .replace('[HERO]', `<h1>Welcome to ${color.theme}</h1><button class="primary-btn">Get Started</button>`)
+    .replace('[FEATURES]', `<div class="grid"><div class="glass-card animate-target">Feature 1</div><div class="glass-card animate-target">Feature 2</div></div>`)
+    .replace('[AVATAR]', `<div class="glass-card">Profile</div>`)
+    .replace('[GALLERY]', `<div class="animate-target">Project 1</div><div class="animate-target">Project 2</div>`);
 
-  // Replace colors
-  modified = modified.replace(/--bg-dark:\s*#[\w\d]+;/g, `--bg-dark: ${config.palette.bg};`);
-  modified = modified.replace(/--text-main:\s*#[\w\d]+;/g, `--text-main: ${config.palette.text};`);
-  modified = modified.replace(/rgba\(56, 189, 248, 0\.4\)/g, `${config.palette.accent}66`); // Hex to approx rgba
-  modified = modified.replace(/--card-bg:\s*[^;]+;/g, `--card-bg: ${config.palette.cardBg};`);
-
-  // Replace gradients
-  modified = modified.replace(/#38bdf8/g, config.palette.accent);
-  modified = modified.replace(/#818cf8/g, config.palette.accent2);
-
-  // Replace spring curves
-  modified = modified.replace(/cubic-bezier\([^)]+\)/g, config.spring.curve);
-
-  // Replace blur amounts
-  if (templateType === 'glass') {
-    modified = modified.replace(/blur\(\d+px\)/g, `blur(${config.blur})`);
-  }
-
-  return modified;
-}
-
-function generate() {
-  console.log('Starting massive dataset generation...');
-
-  const templates = [
-    { file: 'animation-showcases/scroll-driven-spring.html', type: 'scroll', techniques: ["scroll-driven", "spring-physics"] },
-    { file: 'complex-interactions/glassmorphism-dashboard.html', type: 'glass', techniques: ["glassmorphism", "mouse-tracking"] },
-    { file: 'components/staggered-list.html', type: 'micro', techniques: ["micro-interactions", "cubic-bezier"] }
-  ];
-
-  let totalGenerated = 0;
-
-  for (const template of templates) {
-    const rawHTML = readTemplate(template.file);
-    const parsedPath = path.parse(template.file);
-    const targetDir = path.join(BASE_DIR, parsedPath.dir);
-
-    // Create 50 variations per template to hit the ~150 file target
-    for (let i = 0; i < 50; i++) {
-      const palette = variations.palettes[i % variations.palettes.length];
-      const spring = variations.springCurves[i % variations.springCurves.length];
-      const blur = variations.blurAmounts[i % variations.blurAmounts.length];
-
-      const config = { palette, spring, blur };
-      const generatedHTML = processTemplate(rawHTML, config, template.type);
-
-      const newFileName = `${parsedPath.name}-${palette.name}-${spring.name}-v${i}.html`;
-      const newFilePath = path.join(targetDir, newFileName);
-
-      fs.writeFileSync(newFilePath, generatedHTML);
-
-      // Calculate a slight variance in tokens for realism
-      const estimatedTokens = Math.floor(generatedHTML.length / 4);
-
-      updateMetadata({
-        path: `${parsedPath.dir}/${newFileName}`,
-        description: `Variant of ${parsedPath.name} using ${palette.name} palette and ${spring.name} easing.`,
-        techniques: [...template.techniques, palette.name, "procedural-variant"],
-        quality_score: (9.0 + (Math.random() * 0.9)).toFixed(1),
-        estimated_tokens: estimatedTokens,
-        license_note: "synthetic premium"
-      });
-
-      totalGenerated++;
+  // Synthesize CSS
+  const css = `
+    :root {
+      --bg: ${color.bg};
+      --text: ${color.text};
+      --primary: ${color.primary};
+      --secondary: ${color.secondary};
     }
-  }
+    body { background-color: var(--bg); color: var(--text); font-family: system-ui; margin: 0; padding: 2rem; }
+    .glass-card { background: rgba(255,255,255,0.05); border: 1px solid rgba(255,255,255,0.1); padding: 2rem; border-radius: 1rem; ${interaction.effect} }
+    .animate-target { opacity: 0; transform: translateY(50px); }
+    .animate-target.visible { ${interaction.effect} }
+    .primary-btn { cursor: pointer; display: inline-block; padding: 1rem 2rem; background: var(--primary); color: var(--bg); border-radius: 0.5rem; border: none; }
+  `;
 
-  console.log(`Successfully generated ${totalGenerated} premium frontend variations.`);
+  const finalHTML = `<!DOCTYPE html><html lang="en"><head><style>${css}</style></head><body>${bodyHTML}<script>${interaction.js}</script></body></html>`;
+
+  // Create Fine-Tuning Instruction
+  const instruction = `Build a high-quality modern HTML/CSS/JS frontend using the '${layout.name}' pattern. Style it with a '${color.theme}' color palette. Implement advanced '${interaction.name}' animations using vanilla JavaScript and CSS. Ensure it is fully self-contained in a single file.`;
+
+  return { instruction, output: finalHTML };
 }
 
-generate();
+console.log(`Starting synthesis of ${TARGET_ROWS.toLocaleString()} premium examples...`);
+const writeStream = fs.createWriteStream(OUTPUT_FILE);
+
+for (let i = 0; i < TARGET_ROWS; i++) {
+  const example = synthesizeExample();
+  writeStream.write(JSON.stringify(example) + '\n');
+}
+
+writeStream.end(() => {
+  console.log(`Finished writing ${TARGET_ROWS.toLocaleString()} rows to ${OUTPUT_FILE}`);
+});
